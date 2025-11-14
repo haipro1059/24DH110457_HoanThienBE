@@ -14,6 +14,8 @@ namespace _24DH110457_MyStore.Models
     
     public partial class OrderDetail
     {
+        public Nullable<decimal> TotalPrice { get; set; }
+       
         public int ID { get; set; }
         public int ProductID { get; set; }
         public int OrderID { get; set; }

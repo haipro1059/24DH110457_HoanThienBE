@@ -1,0 +1,49 @@
+﻿@model MaSV_MyStore.Models.ViewModel.LoginVM
+
+@{
+    ViewBag.Title = "Đăng nhập";
+    Layout = "~/Views/Shared/_Layout.cshtml"; // Hoặc Layout chung của bạn
+}
+
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-6">
+            <h2>Đăng nhập</h2>
+
+            @using (Html.BeginForm("Login", "Account", FormMethod.Post, new { @class = "form-horizontal", role = "form" }))
+            {
+                @Html.AntiForgeryToken()
+
+                @* Hiển thị lỗi tổng quan *@
+                @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+
+                @* Tên đăng nhập *@
+                <div class="form-group">
+                    @Html.LabelFor(model => model.Username, new { @class = "control-label col-md-4" })
+                    <div class="col-md-8">
+                        @Html.TextBoxFor(model => model.Username, new { @class = "form-control" })
+                        @Html.ValidationMessageFor(model => model.Username, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+
+                @* Mật khẩu *@
+                <div class="form-group">
+                    @Html.LabelFor(model => model.Password, new { @class = "control-label col-md-4" })
+                    <div class="col-md-8">
+                        @Html.PasswordFor(model => model.Password, new { @class = "form-control" })
+                        @Html.ValidationMessageFor(model => model.Password, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+
+                @* Nút Đăng nhập *@
+                <div class="form-group">
+                    <div class="col-md-offset-4 col-md-8">
+                        <input type="submit" value="Đăng nhập" class="btn btn-success" />
+                        <br />
+                        <p class="mt-2">Bạn Chưa Có Tài Khoản? @Html.ActionLink("Đăng ký ngay", "Register", "Account", null, null)</p>
+                    </div>
+                </div>
+            }
+        </div>
+    </div>
+</div>

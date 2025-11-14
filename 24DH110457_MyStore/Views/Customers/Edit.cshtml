@@ -1,0 +1,37 @@
+﻿@model _24DH110457_MyStore.Models.Customer
+@{
+    ViewBag.Title = "Cập nhật thông tin";
+}
+
+<h2 class="text-center text-warning mb-4">Cập nhật thông tin cá nhân</h2>
+
+@using (Html.BeginForm("Edit", "Account", FormMethod.Post))
+{
+    @Html.AntiForgeryToken()
+    @Html.HiddenFor(m => m.CustomerID)
+
+    @* KHÔNG sử dụng HiddenFor cho Password ở đây để tránh lỗi biên dịch,
+        Controller sẽ tự load mật khẩu cũ nếu không có mật khẩu mới. *@
+
+    <div class="form-group mb-3">
+        @Html.LabelFor(m => m.CustomerName, "Họ tên")
+        @Html.TextBoxFor(m => m.CustomerName, new { @class = "form-control" })
+    </div>
+
+    <div class="form-group mb-3">
+        @Html.LabelFor(m => m.CustomerEmail, "Email")
+        @Html.TextBoxFor(m => m.CustomerEmail, new { @class = "form-control" })
+    </div>
+
+    <div class="form-group mb-3">
+        @Html.LabelFor(m => m.CustomerPhone, "Số điện thoại")
+        @Html.TextBoxFor(m => m.CustomerPhone, new { @class = "form-control" })
+    </div>
+
+    @* LOẠI BỎ INPUT MẬT KHẨU TỪ VIEW NÀY để giải quyết lỗi CS0117 liên quan đến CustomerPassword/Password *@
+    @* Nếu muốn thay đổi mật khẩu, bạn cần tạo form/View riêng biệt (ChangePassword) *@
+
+    <div class="text-center">
+        <button type="submit" class="btn btn-success px-4">💾 Lưu thay đổi</button>
+    </div>
+}

@@ -1,0 +1,129 @@
+﻿@using PagedList.Mvc;
+@model PagedList.IPagedList<_24DH110457_MyStore.Models.Product>
+
+@{
+    ViewBag.Title = "Trang Chủ Cửa Hàng";
+    Layout = "~/Areas/Admin/Views/Shared/_AdminLayout.cshtml";
+}
+
+<h2 class="bg-success text-center text-white p-2">DANH SÁCH SẢN PHẨM</h2>
+
+<!-- 🔎 FORM TÌM KIẾM + LỌC GIÁ -->
+@using (Html.BeginForm("Index", "Products", FormMethod.Get))
+{
+    <div class="container text-center mb-4">
+        <div class="row justify-content-center g-2">
+            <!-- Ô tìm kiếm -->
+            <div class="col-md-4">
+                <input type="text" name="searchString" value="@ViewBag.CurrentFilter"
+                       class="form-control"
+                       placeholder="Nhập tên, mô tả hoặc danh mục..." />
+            </div>
+
+            <!-- Ô giá tối thiểu -->
+            <div class="col-md-2">
+                <input type="number" step="1000" name="minPrice" value="@(ViewBag.MinPrice ?? "")"
+                       class="form-control" placeholder="Giá tối thiểu" />
+            </div>
+
+            <!-- Ô giá tối đa -->
+            <div class="col-md-2">
+                <input type="number" step="1000" name="maxPrice" value="@(ViewBag.MaxPrice ?? "")"
+                       class="form-control" placeholder="Giá tối đa" />
+            </div>
+
+            <!-- Nút tìm kiếm -->
+            <div class="col-md-2">
+                <input type="submit" value="Tìm kiếm" class="btn btn-primary w-100" />
+            </div>
+
+            <!-- Nút reset -->
+            <div class="col-md-2">
+                <a href="@Url.Action("Index")" class="btn btn-secondary w-100">Đặt lại</a>
+            </div>
+        </div>
+    </div>
+}
+
+<!-- 📋 BẢNG HIỂN THỊ -->
+<table class="table table-bordered table-hover text-center align-middle">
+    <thead class="bg-success text-white">
+        <tr>
+            <th>
+                @Html.ActionLink("Tên sản phẩm", "Index",
+                    new { sortOrder = ViewBag.NameSortParm, currentFilter = ViewBag.CurrentFilter, minPrice = ViewBag.MinPrice, maxPrice = ViewBag.MaxPrice })
+            </th>
+            <th>Hình ảnh</th>
+            <th>
+                @Html.ActionLink("Đơn giá", "Index",
+                    new { sortOrder = ViewBag.PriceSortParm, currentFilter = ViewBag.CurrentFilter, minPrice = ViewBag.MinPrice, maxPrice = ViewBag.MaxPrice })
+            </th>
+            <th>Danh mục</th>
+            <th>Chức năng</th>
+        </tr>
+    </thead>
+
+    <tbody>
+        @if (Model != null && Model.Any())
+        {
+            foreach (var item in Model)
+            {
+                <tr>
+                    <td>@item.ProductName</td>
+
+                    <!-- 🖼 HIỂN THỊ ẢNH CÓ LINK HOẶC ẢNH LOCAL -->
+                    <td>
+                        @if (!string.IsNullOrEmpty(item.ProductImage))
+                        {
+                            string imgSrc = item.ProductImage.StartsWith("http", StringComparison.OrdinalIgnoreCase)
+                                ? item.ProductImage
+                                : Url.Content("~/Content/images/" + item.ProductImage);
+
+                            <img src="@imgSrc" alt="@item.ProductName"
+                                 style="max-height:100px; border-radius:5px;" />
+                        }
+                        else
+                        {
+                            <span class="text-muted">Không có ảnh</span>
+                        }
+                    </td>
+
+                    <td>@item.ProductPrice.ToString("N0") ₫</td>
+                    <td>@item.Category.CategoryName</td>
+                    <td>
+                        @Html.ActionLink("Sửa", "Edit", new { id = item.ProductID }, new { @class = "btn btn-primary btn-sm" })
+                        @Html.ActionLink("Chi tiết", "Details", new { id = item.ProductID }, new { @class = "btn btn-info btn-sm" })
+                        @Html.ActionLink("Xóa", "Delete", new { id = item.ProductID }, new { @class = "btn btn-danger btn-sm" })
+                    </td>
+                </tr>
+            }
+        }
+        else
+        {
+            <tr>
+                <td colspan="5" class="text-danger text-center">Không tìm thấy sản phẩm nào phù hợp.</td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+<!-- 🧭 PHÂN TRANG -->
+<div class="d-flex justify-content-center">
+    @Html.PagedListPager(
+        Model,
+        page => Url.Action("Index", new
+        {
+            page,
+            sortOrder = ViewBag.CurrentSort,
+            currentFilter = ViewBag.CurrentFilter,
+            minPrice = ViewBag.MinPrice,
+            maxPrice = ViewBag.MaxPrice
+        }),
+        PagedListRenderOptions.ClassicPlusFirstAndLast
+    )
+</div>
+
+<!-- ➕ Nút thêm mới -->
+<div class="text-center mt-3">
+    @Html.ActionLink("Thêm mới", "Create", null, new { @class = "btn btn-success" })
+</div>

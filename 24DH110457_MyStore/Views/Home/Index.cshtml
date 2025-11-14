@@ -1,33 +1,54 @@
-﻿@{
-    ViewBag.Title = "Home Page";
+﻿@model MaSV_MyStore.Models.ViewModel.HomeProductVM
+@using PagedList.Mvc;
+
+@{
+    ViewBag.Title = "Trang chủ - MyStore";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+
+    // Gán Model.SearchTerm vào ViewBag.CurrentFilter
+    ViewBag.CurrentFilter = Model?.SearchTerm;
 }
 
-<main>
-    <section class="row" aria-labelledby="aspnetTitle">
-        <h1 id="title">ASP.NET</h1>
-        <p class="lead">ASP.NET is a free web framework for building great Web sites and Web applications using HTML, CSS and JavaScript.</p>
-        <p><a href="https://asp.net" class="btn btn-primary btn-md">Learn more &raquo;</a></p>
-    </section>
+<div class="text-center mb-4">
+    @* Banner/Hình ảnh *@
+    <img src="https://png.pngtree.com/thumb_back/fh260/background/20220215/pngtree-double-eleven-2-5d-mobile-phone-shopping-banner-poster-image_924667.jpg"
+         alt="Banner MyStore"
+         class="img-fluid rounded shadow-sm"
+         style="width:100%; max-height:400px; object-fit:cover;" />
+</div>
 
-    <div class="row">
-        <section class="col-md-4" aria-labelledby="gettingStartedTitle">
-            <h2 id="gettingStartedTitle">Getting started</h2>
-            <p>
-                ASP.NET MVC gives you a powerful, patterns-based way to build dynamic websites that
-                enables a clean separation of concerns and gives you full control over markup
-                for enjoyable, agile development.
-            </p>
-            <p><a class="btn btn-outline-dark" href="https://go.microsoft.com/fwlink/?LinkId=301865">Learn more &raquo;</a></p>
-        </section>
-        <section class="col-md-4" aria-labelledby="librariesTitle">
-            <h2 id="librariesTitle">Get more libraries</h2>
-            <p>NuGet is a free Visual Studio extension that makes it easy to add, remove, and update libraries and tools in Visual Studio projects.</p>
-            <p><a class="btn btn-outline-dark" href="https://go.microsoft.com/fwlink/?LinkId=301866">Learn more &raquo;</a></p>
-        </section>
-        <section class="col-md-4" aria-labelledby="hostingTitle">
-            <h2 id="hostingTitle">Web Hosting</h2>
-            <p>You can easily find a web hosting company that offers the right mix of features and price for your applications.</p>
-            <p><a class="btn btn-outline-dark" href="https://go.microsoft.com/fwlink/?LinkId=301867">Learn more &raquo;</a></p>
-        </section>
+
+@* FORM TÌM KIẾM (ĐÃ LOẠI BỎ CĂN GIỮA) *@
+@* KHÔNG CÓ DIV FLEXBOX BAO NGOÀI NÀO NỮA *@
+@using (Html.BeginForm("Index", "Home", FormMethod.Get))
+{
+    @* Sử dụng w-50 mx-auto để nó nằm ở giữa 50% hoặc căn trái theo mặc định *@
+    <div class="input-group mb-5 w-50 mx-auto">
+        <input type="text"
+               name="searchTerm"
+               value="@Model.SearchTerm"
+               class="form-control"
+               placeholder="Nhập tên sản phẩm hoặc mô tả..." />
+        <button class="btn btn-primary" type="submit">Tìm kiếm</button>
     </div>
-</main>
+}
+
+<div class="container all-products-container">
+
+    @* 🌟 PHẦN SẢN PHẨM NỔI BẬT *@
+    @if (Model.FeaturedProducts != null && Model.FeaturedProducts.Any())
+    {
+        <h3>Sản phẩm nổi bật</h3>
+        @Html.Partial("_PVFeatureProduct", Model.FeaturedProducts)
+    }
+
+    <hr class="mt-5" />
+
+    @* 🆕 PHẦN SẢN PHẨM MỚI *@
+    <h3>Danh sách sản phẩm</h3>
+    @Html.Partial("_PVNewProduct", Model)
+</div>
+
+@section Scripts {
+    @* Đảm bảo các script của bạn được tải *@
+}

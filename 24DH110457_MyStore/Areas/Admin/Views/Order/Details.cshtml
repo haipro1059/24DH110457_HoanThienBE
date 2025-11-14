@@ -1,0 +1,102 @@
+﻿@model _24DH110457_MyStore.Models.Order
+@using System.Globalization;
+
+@{
+    ViewBag.Title = "Chi tiết đơn hàng #" + Model.OrderID;
+    Layout = "~/Areas/Admin/Views/Shared/_AdminLayout.cshtml";
+}
+
+<h2 class="text-success mb-4 border-bottom pb-2">CHI TIẾT ĐƠN HÀNG #@Model.OrderID</h2>
+
+@* Hiển thị thông báo (từ TempData sau khi UpdateStatus) *@
+@if (TempData["Success"] != null)
+{
+    <div class="alert alert-success mt-3">@TempData["Success"]</div>
+}
+@if (TempData["Error"] != null)
+{
+    <div class="alert alert-danger mt-3">@TempData["Error"]</div>
+}
+
+<div class="row">
+
+    @* --- CỘT TRÁI: THÔNG TIN CHUNG VÀ CẬP NHẬT TRẠNG THÁI --- *@
+    <div class="col-md-5">
+        <div class="card shadow-sm p-4 mb-4">
+            <h4 class="mb-3 text-primary">Thông tin Đơn hàng</h4>
+
+            <p><strong>Mã đơn hàng:</strong> @Model.OrderID</p>
+            <p><strong>Ngày đặt:</strong> @Model.OrderDate.ToString("dd/MM/yyyy HH:mm")</p>
+            <p><strong>Tên khách hàng:</strong> @(Model.Customer?.CustomerName ?? "Khách hàng bị ẩn")</p>
+
+            @* 🎯 HIỂN THỊ DỮ LIỆU ĐỊA CHỈ ĐÃ FIX *@
+            <p><strong>Địa chỉ giao hàng:</strong> @(Model.ShippingAddress ?? Model.AddressDelivery ?? "N/A")</p>
+            <p><strong>Số điện thoại:</strong> @Model.ShippingPhone</p>
+            <p><strong>Tổng giá trị:</strong> <span class="text-danger fw-bold">@Model.TotalAmount.ToString("N0") ₫</span></p>
+            <p><strong>Phương thức TT:</strong> @Model.PaymentMethod</p>
+
+            <hr class="my-3" />
+
+            @* 🎯 KHỐI CẬP NHẬT TRẠNG THÁI *@
+            @using (Html.BeginForm("UpdateStatus", "Order", FormMethod.Post, new { @class = "mt-3", @area = "Admin" }))
+            {
+                @Html.AntiForgeryToken()
+                @Html.Hidden("OrderID", Model.OrderID)
+
+                <h5 class="mb-3">Cập nhật Trạng thái</h5>
+
+                <div class="d-flex align-items-center">
+                    @* Dropdown Status Options (Lấy từ ViewBag đã tạo trong Controller) *@
+                    @Html.DropDownList("Status", ViewBag.StatusOptions as SelectList, new { @class = "form-select me-2" })
+
+                    <button type="submit" class="btn btn-success">
+                        <i class="fas fa-save me-1"></i> Lưu
+                    </button>
+                </div>
+            }
+
+            @* Nút Quay lại *@
+            <div class="mt-4">
+                @Html.ActionLink("Quay lại Danh sách", "Index", "Order", new { area = "Admin" }, new { @class = "btn btn-outline-secondary" })
+            </div>
+        </div>
+    </div>
+
+    @* --- CỘT PHẢI: CHI TIẾT SẢN PHẨM --- *@
+    <div class="col-md-7">
+        <div class="card shadow-sm p-4">
+            <h4 class="mb-3 text-primary">Chi tiết Sản phẩm</h4>
+
+            <table class="table table-bordered table-striped text-center align-middle">
+                <thead class="table-info">
+                    <tr>
+                        <th>Sản phẩm</th>
+                        <th>SL</th>
+                        <th>Đơn giá</th>
+                        <th>Tổng tiền</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @if (Model.OrderDetails != null && Model.OrderDetails.Any())
+                    {
+                        foreach (var detail in Model.OrderDetails)
+                        {
+                            <tr>
+                                <td class="text-start">@(detail.Product?.ProductName ?? "[Sản phẩm đã xóa]")</td>
+                                <td>@detail.Quantity</td>
+                                <td>@detail.UnitPrice.ToString("N0") ₫</td>
+                                <td>@((detail.Quantity * detail.UnitPrice).ToString("N0")) ₫</td>
+                            </tr>
+                        }
+                    }
+                    else
+                    {
+                        <tr>
+                            <td colspan="4" class="text-center text-muted">Không có chi tiết sản phẩm.</td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>

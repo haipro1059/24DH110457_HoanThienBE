@@ -1,0 +1,204 @@
+﻿/*
+ * File: CustomerHome.css
+ * Chứa các styles tùy chỉnh cho giao diện Home và Product Card.
+ * Nên được liên kết trong <head> của _Layout.cshtml.
+ */
+
+/* ======================================================= */
+/* === STYLES CHUNG VÀ HEADER/FOOTER (Chủ đề Tối) === */
+/* ======================================================= */
+
+body {
+    padding-top: 56px;
+    background-color: #f8f9fa; /* Màu nền nhẹ */
+}
+
+/* HEADER (Navbar) - Dark Theme */
+.navbar {
+    background-color: #343a40 !important;
+    color: white;
+    position: fixed;
+    width: 100%;
+    top: 0;
+    z-index: 1030;
+}
+
+    .navbar .nav-link, .navbar .navbar-brand, .navbar .dropdown-toggle {
+        color: white !important;
+    }
+
+        .navbar .nav-link:hover {
+            color: #dee2e6 !important;
+        }
+
+/* FOOTER */
+.custom-footer {
+    background-color: #343a40;
+    color: white;
+    padding: 15px 0;
+    margin-top: 40px;
+}
+
+    .custom-footer .container {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+
+    .custom-footer p {
+        margin: 0;
+        font-size: 0.9em;
+    }
+
+/* ======================================================= */
+/* === VÙNG TÌM KIẾM (Search Area) === */
+/* ======================================================= */
+
+.search-area {
+    margin: 40px auto 30px auto;
+    text-align: center;
+}
+
+.search-container {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+}
+
+.search-area .form-control {
+    border-radius: 20px 0 0 20px;
+}
+
+.search-area button {
+    background-color: #dc3545 !important; /* Màu đỏ đậm */
+    border-color: #dc3545;
+    color: white;
+    padding: 5px 20px;
+    border-radius: 0 20px 20px 0;
+    cursor: pointer;
+    border: none;
+}
+
+
+/* ======================================================= */
+/* === KHU VỰC SẢN PHẨM & CUỘN NGANG === */
+/* ======================================================= */
+
+/* Tiêu đề Sản phẩm */
+.product-section-scroll h3 {
+    font-size: 1.5rem; /* ~24px */
+    font-weight: bold;
+    margin-bottom: 20px;
+    color: #dc3545; /* Màu đỏ */
+    text-align: center;
+}
+
+/* Container Cuộn Ngang */
+.product-list-container {
+    display: flex;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    padding: 15px;
+    gap: 15px;
+    scroll-snap-type: x mandatory;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    background-color: white;
+}
+
+    /* Ẩn thanh cuộn mặc định */
+    .product-list-container::-webkit-scrollbar {
+        display: none;
+    }
+
+.product-list-container {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+}
+
+/* Định nghĩa Product Card */
+.product-card {
+    flex: 0 0 200px; /* Chiều rộng cố định */
+    padding: 10px;
+    height: 350px;
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    border: 1px solid #ddd;
+    border-radius: 10px;
+    text-align: center;
+}
+
+    .product-card img {
+        max-width: 100%;
+        height: 150px; /* Tăng chiều cao ảnh so với hình (130px) để cân đối */
+        object-fit: contain;
+        margin-bottom: 10px;
+    }
+
+    .product-card .details {
+        text-align: left;
+        margin-top: 5px;
+        line-height: 1.2;
+    }
+
+    /* [Chi tiết bên trong Card] */
+    .product-card .product-price {
+        font-size: 1.25em;
+        color: blue;
+        font-weight: bold;
+        text-align: left;
+        margin: 5px 0;
+    }
+
+    .product-card .product-name-truncate {
+        font-size: 14px;
+        font-weight: bold;
+        color: black;
+        text-align: left;
+        /* Có thể cần thêm overflow: hidden nếu tên quá dài */
+    }
+
+    .product-card .product-type, .product-card .small {
+        font-size: small;
+        color: darkgray;
+        text-align: left;
+        margin: 0;
+    }
+
+/* [Thanh Điều Hướng Cuộn] */
+.scroll-navigation {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    margin-top: 10px;
+}
+
+.scroll-arrow {
+    background: none;
+    border: none;
+    font-size: 1.5rem;
+    color: #6c757d;
+    cursor: pointer;
+    padding: 5px;
+    user-select: none;
+}
+
+.scroll-progress-bar {
+    flex-grow: 1;
+    max-width: 400px;
+    height: 8px;
+    background-color: #e9ecef;
+    border-radius: 4px;
+    overflow: hidden;
+}
+
+.scroll-progress-fill {
+    height: 100%;
+    width: 0%;
+    background-color: #6c757d;
+    border-radius: 4px;
+}

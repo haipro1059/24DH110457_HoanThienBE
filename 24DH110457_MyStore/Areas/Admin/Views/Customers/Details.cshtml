@@ -1,0 +1,13 @@
+﻿@model _24DH110457_MyStore.Models.Customer
+@{
+    ViewBag.Title = "Chi tiết khách hàng";
+    Layout = "~/Areas/Admin/Views/Shared/_AdminLayout.cshtml";
+}
+
+<h2>Chi tiết khách hàng</h2>
+<p><b>Mã KH:</b> @Model.CustomerID</p>
+<p><b>Tên:</b> @Model.CustomerName</p>
+<p><b>Email:</b> @Model.CustomerEmail</p>
+<p><b>Điện thoại:</b> @Model.CustomerPhone</p>
+
+<a href="@Url.Action("Index")" class="btn btn-secondary">Quay lại danh sách</a>

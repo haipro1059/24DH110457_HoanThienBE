@@ -1,0 +1,122 @@
+﻿@model _24DH110457_MyStore.Models.ViewModel.CheckoutVM
+
+@{
+    ViewBag.Title = "Thanh toán";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+
+    // Khai báo biến tính toán để tránh lỗi CS0103 nếu các thuộc tính không được định nghĩa rõ ràng
+    decimal totalBeforeShipping = Model?.Cart?.TotalValue() ?? 0;
+    decimal shippingFee = 30000;
+}
+
+<h2 class="text-center text-danger mb-4">THANH TOÁN</h2>
+<div class="row">
+    @using (Html.BeginForm("Checkout", "Order", FormMethod.Post, new { @class = "form-horizontal", role = "form" }))
+    {
+        @Html.AntiForgeryToken()
+
+        @* Loại bỏ các HiddenFor không cần thiết (CustomerID, Username, TotalAmount sẽ được Controller xử lý) *@
+
+        @Html.ValidationSummary(false, "Vui lòng kiểm tra lại các lỗi sau:", new { @class = "text-danger mb-3" })
+
+        @* CỘT CHÍNH: Thông tin giao hàng *@
+        <div class="col-md-6">
+
+            <h4 class="mb-3">1. Thông tin giao hàng</h4>
+
+            @* Địa chỉ giao hàng (Mặc định lấy từ Profile) *@
+            <div class="mb-3">
+                @Html.LabelFor(m => m.ShippingAddress, "Địa chỉ nhận hàng", new { @class = "form-label" })
+                @Html.TextBoxFor(m => m.ShippingAddress, new { @class = "form-control" }) @* Loại bỏ @readonly để cho phép chỉnh sửa *@
+                @Html.ValidationMessageFor(m => m.ShippingAddress, "", new { @class = "text-danger" })
+            </div>
+
+            @* Tên người nhận *@
+            <div class="mb-3">
+                @Html.LabelFor(m => m.RecipientName, "Tên người nhận", new { @class = "form-label" })
+                @Html.TextBoxFor(m => m.RecipientName, new { @class = "form-control" })
+                @Html.ValidationMessageFor(m => m.RecipientName, "", new { @class = "text-danger" })
+            </div>
+
+            @* Số điện thoại *@
+            <div class="mb-3">
+                @Html.LabelFor(m => m.ShippingPhone, "Số điện thoại", new { @class = "form-label" })
+                @Html.TextBoxFor(m => m.ShippingPhone, new { @class = "form-control" })
+                @Html.ValidationMessageFor(m => m.ShippingPhone, "", new { @class = "text-danger" })
+            </div>
+
+
+            <h4 class="mb-3 mt-4">2. Phương thức giao hàng</h4>
+            @* Radio button cho ShippingMethod *@
+            <div class="mb-3">
+                <div class="form-check">
+                    @Html.RadioButtonFor(m => m.ShippingMethod, "Giao nhanh", new { @class = "form-check-input", id = "shipFast" })
+                    <label class="form-check-label" for="shipFast">Giao nhanh</label>
+                </div>
+                <div class="form-check">
+                    @Html.RadioButtonFor(m => m.ShippingMethod, "Giao tiết kiệm", new { @class = "form-check-input", id = "shipSlow" })
+                    <label class="form-check-label" for="shipSlow">Giao tiết kiệm</label>
+                </div>
+                @Html.ValidationMessageFor(m => m.ShippingMethod, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        @* CỘT PHỤ: Tóm tắt và Thanh toán *@
+        <div class="col-md-6">
+
+            @* Phần 1: Giỏ hàng tóm tắt *@
+            <div class="mb-4 p-3 border rounded shadow-sm">
+                <h4 class="mb-3">Tóm tắt đơn hàng</h4>
+
+                @* ⚠️ SỬA LỖI: Truyền Model.Cart (đối tượng) thay vì CartItems (danh sách) *@
+                @if (Model.Cart == null || !Model.Cart.Items.Any())
+                {
+                    // Lỗi tùy chỉnh của bạn sẽ nằm ở đây
+                    <div class="text-danger">Giỏ hàng không tải được.</div>
+                }
+                else
+                {
+                    @Html.Partial("_PVOrderSummary", Model.Cart)
+                }
+            </div>
+
+            <h4 class="mb-3">3. Phương thức thanh toán</h4>
+            @* Radio button cho PaymentMethod *@
+            <div class="mb-4 p-3 border rounded shadow-sm">
+                <div class="form-check">
+                    @Html.RadioButtonFor(m => m.PaymentMethod, "Tiền mặt", new { @class = "form-check-input", id = "payCOD" })
+                    <label class="form-check-label" for="payCOD">Thanh toán khi nhận hàng (COD)</label>
+                </div>
+                <div class="form-check">
+                    @Html.RadioButtonFor(m => m.PaymentMethod, "PayPal", new { @class = "form-check-input", id = "payPayPal" })
+                    <label class="form-check-label" for="payPayPal">PayPal/Thẻ tín dụng</label>
+                </div>
+                @Html.ValidationMessageFor(m => m.PaymentMethod, "", new { @class = "text-danger" })
+            </div>
+
+            @* 4. TỔNG TIỀN *@
+            <div class="mb-4 p-3 border rounded shadow-sm">
+                <h4 class="mb-3">Tổng tiền</h4>
+                <div class="d-flex justify-content-between">
+                    <span>Tổng tiền hàng:</span>
+                    <span>@totalBeforeShipping.ToString("N0") ₫</span>
+                </div>
+                <div class="d-flex justify-content-between text-success fw-bold">
+                    <span>Phí vận chuyển:</span>
+                    <span>@shippingFee.ToString("N0") ₫</span>
+                </div>
+                <hr />
+                @* Hiển thị Tổng cuối cùng *@
+                <p class="h4 mt-3">Tổng thanh toán: <span class="text-danger float-end">@((totalBeforeShipping + shippingFee).ToString("N0")) ₫</span></p>
+
+                <div class="text-center mt-4">
+                    <button type="submit" class="btn btn-danger btn-lg px-5">ĐẶT HÀNG</button>
+                </div>
+            </div>
+        </div>
+    }
+</div>
+
+@section Scripts {
+    @Scripts.Render("~/bundles/jqueryval")
+}

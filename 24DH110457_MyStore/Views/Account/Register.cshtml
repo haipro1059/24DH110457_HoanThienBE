@@ -1,0 +1,94 @@
+﻿@model MaSV_MyStore.Models.ViewModel.RegisterVM
+
+@{
+    ViewBag.Title = "ĐĂNG KÝ TÀI KHOẢN";
+    Layout = "~/Views/Shared/_Layout.cshtml"; // Hoặc Layout chung của bạn
+}
+
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <h2>Đăng ký tài khoản</h2>
+
+            @using (Html.BeginForm("Register", "Account", FormMethod.Post, new { @class = "form-horizontal", role = "form" }))
+            {
+                @Html.AntiForgeryToken()
+
+                @* Hiển thị lỗi tổng quan *@
+                @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+
+                @* Tên đăng nhập *@
+                <div class="form-group">
+                    @Html.LabelFor(model => model.Username, new { @class = "control-label col-md-3" })
+                    <div class="col-md-9">
+                        @Html.TextBoxFor(model => model.Username, new { @class = "form-control" })
+                        @Html.ValidationMessageFor(model => model.Username, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+
+                @* Mật khẩu *@
+                <div class="form-group">
+                    @Html.LabelFor(model => model.Password, new { @class = "control-label col-md-3" })
+                    <div class="col-md-9">
+                        @Html.PasswordFor(model => model.Password, new { @class = "form-control" })
+                        @Html.ValidationMessageFor(model => model.Password, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+
+                @* Xác nhận mật khẩu *@
+                <div class="form-group">
+                    @Html.LabelFor(model => model.ConfirmPassword, new { @class = "control-label col-md-3" })
+                    <div class="col-md-9">
+                        @Html.PasswordFor(model => model.ConfirmPassword, new { @class = "form-control" })
+                        @Html.ValidationMessageFor(model => model.ConfirmPassword, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+
+                @* Họ tên khách hàng *@
+                <div class="form-group">
+                    @Html.LabelFor(model => model.CustomerName, new { @class = "control-label col-md-3" })
+                    <div class="col-md-9">
+                        @Html.TextBoxFor(model => model.CustomerName, new { @class = "form-control" })
+                        @Html.ValidationMessageFor(model => model.CustomerName, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+
+                @* Số điện thoại *@
+                <div class="form-group">
+                    @Html.LabelFor(model => model.CustomerPhone, new { @class = "control-label col-md-3" })
+                    <div class="col-md-9">
+                        @Html.TextBoxFor(model => model.CustomerPhone, new { @class = "form-control" })
+                        @Html.ValidationMessageFor(model => model.CustomerPhone, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+
+                @* Email khách hàng *@
+                <div class="form-group">
+                    @Html.LabelFor(model => model.CustomerEmail, new { @class = "control-label col-md-3" })
+                    <div class="col-md-9">
+                        @Html.TextBoxFor(model => model.CustomerEmail, new { @class = "form-control" })
+                        @Html.ValidationMessageFor(model => model.CustomerEmail, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+
+                @* Địa chỉ khách hàng *@
+                <div class="form-group">
+                    @Html.LabelFor(model => model.CustomerAddress, new { @class = "control-label col-md-3" })
+                    <div class="col-md-9">
+                        @Html.TextBoxFor(model => model.CustomerAddress, new { @class = "form-control" })
+                        @Html.ValidationMessageFor(model => model.CustomerAddress, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+
+                @* Nút Đăng ký *@
+                <div class="form-group">
+                    <div class="col-md-offset-3 col-md-9">
+                        <input type="submit" value="Đăng ký" class="btn btn-primary" />
+                        <br />
+                        <p class="mt-2">Bạn Đã Có Tài Khoản? @Html.ActionLink("Đăng nhập", "Login", "Account", null, null)</p>
+                    </div>
+                </div>
+            }
+        </div>
+    </div>
+</div>

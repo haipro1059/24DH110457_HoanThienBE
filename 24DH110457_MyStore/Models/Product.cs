@@ -19,7 +19,8 @@ namespace _24DH110457_MyStore.Models
         {
             this.OrderDetails = new HashSet<OrderDetail>();
         }
-    
+        
+             public int ProductSoldCount { get; set; }
         public int ProductID { get; set; }
         public int CategoryID { get; set; }
         public string ProductName { get; set; }

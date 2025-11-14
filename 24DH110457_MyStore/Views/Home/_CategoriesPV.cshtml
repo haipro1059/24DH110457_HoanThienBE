@@ -1,0 +1,21 @@
+﻿
+@model IEnumerable<_24DH110457_MyStore.Models.Category>
+
+
+
+<ul class="navbar-nav me-auto mb-2 mb-lg-0">
+    <li class="nav-item">
+        @Html.ActionLink("Trang chủ", "Index", "Home", null, new { @class = "nav-link" })
+    </li>
+
+    @if (Model != null)
+    {
+        foreach (var category in Model)
+        {
+            <li class="nav-item">
+                
+                @Html.ActionLink(category.CategoryName, "ProductList", "Home", new { categoryId = category.CategoryID }, new { @class = "nav-link" })
+            </li>
+        }
+    }
+</ul>

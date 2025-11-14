@@ -1,8 +1,70 @@
-﻿
+﻿@model IEnumerable<_24DH110457_MyStore.Models.CategoryProductStats>
+
 @{
-    ViewBag.Title = "Index";
+    ViewBag.Title = "Trang Home";
     Layout = "~/Areas/Admin/Views/Shared/_AdminLayout.cshtml";
 }
 
-<h2>TRANG QUẢN TRỊ</h2>
+<h2 class="bg-success text-white p-2">THỐNG KÊ HÀNG HÓA TỪNG LOẠI</h2>
 
+<table class="table table-bordered table-striped text-center">
+    <thead class="table-success">
+        <tr>
+            <th>Loại hàng</th>
+            <th>Số lượng</th>
+            <th>Giá cao nhất</th>
+            <th>Giá thấp nhất</th>
+            <th>Giá trung bình</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>@item.CategoryName</td>
+                <td>@item.ProductCount</td>
+                <td>@String.Format("{0:C}", item.MaxPrice)</td>
+                <td>@String.Format("{0:C}", item.MinPrice)</td>
+                <td>@String.Format("{0:C}", item.AvgPrice)</td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+<div style="text-align:center; margin:20px;">
+    <button class="btn btn-primary" id="btnShowChart">Xem biểu đồ</button>
+</div>
+
+<div id="chart_div" style="width: 100%; height: 500px; display:none;"></div>
+
+@section Scripts {
+    <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+    <script>
+        google.charts.load('current', { packages: ['corechart'] });
+
+        document.getElementById("btnShowChart").addEventListener("click", function () {
+            document.getElementById("chart_div").style.display = "block";
+            google.charts.setOnLoadCallback(drawChart);
+        });
+
+        function drawChart() {
+            var data = google.visualization.arrayToDataTable([
+                ['Loại hàng', 'Số lượng'],
+                @foreach (var item in Model)
+                {
+                    @: ['@item.CategoryName', @item.ProductCount],
+                }
+            ]);
+
+            var options = {
+                title: 'TỶ LỆ HÀNG HÓA',
+                is3D: true,
+                pieSliceText: 'percentage',
+                backgroundColor: 'transparent'
+            };
+
+            var chart = new google.visualization.PieChart(document.getElementById('chart_div'));
+            chart.draw(data, options);
+        }
+    </script>
+}

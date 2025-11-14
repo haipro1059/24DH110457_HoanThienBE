@@ -1,0 +1,40 @@
+﻿@model IEnumerable<_24DH110457_MyStore.Models.Product>
+
+<h3 class="text-center text-danger mt-4">Sản phẩm nổi bật</h3>
+<div class="d-flex overflow-auto p-3" style="gap: 20px;">
+    @foreach (var item in Model)
+    {
+        <div class="card" style="width: 200px;">
+
+            @* LOGIC HIỂN THỊ HÌNH ẢNH *@
+            @{
+                string imagePath = item.ProductImage;
+
+                if (string.IsNullOrEmpty(imagePath))
+                {
+                    imagePath = Url.Content("~/Content/images/default.png");
+                }
+                else if (!imagePath.StartsWith("http", System.StringComparison.OrdinalIgnoreCase))
+                {
+                    imagePath = Url.Content("~/Content/images/" + imagePath);
+                }
+            }
+
+            <img src="@imagePath"
+                 class="card-img-top"
+                 style="height:180px; object-fit:cover;"
+                 alt="@item.ProductName" />
+
+            <div class="card-body text-center">
+
+                <h6 class="card-title">@item.ProductName</h6>
+
+                @* Hiển thị giá chỉ khi > 0 *@
+                <p class="text-primary fw-bold">
+                    @(item.ProductPrice > 0 ? item.ProductPrice.ToString("N0") + " ₫" : "Liên hệ")
+                </p>
+
+            </div>
+        </div>
+    }
+</div>

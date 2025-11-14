@@ -1,0 +1,79 @@
+﻿@model _24DH110457_MyStore.Models.ViewModel.ProfileInfoVM
+
+@{
+    ViewBag.Title = "Thông tin tài khoản";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        @* 1. CĂN GIỮA VÀ ĐỊNH DẠNG KHUNG *@
+        <div class="col-md-8 col-lg-7">
+
+            <h2 class="text-center text-primary mb-4">THÔNG TIN TÀI KHOẢN</h2>
+
+            @* Thẻ card bao ngoài với bóng đổ và padding *@
+        <div class="card shadow-lg p-5">
+
+            @* Hiển thị thông báo trạng thái *@
+            @if (!string.IsNullOrEmpty(Model.StatusMessage))
+            {
+                <div class="alert alert-success mt-2 mb-4">@Model.StatusMessage</div>
+            }
+
+            @* Tiêu đề nội dung form *@
+            <h4 class="mb-4 text-secondary border-bottom pb-2">Cập nhật hồ sơ</h4>
+
+            @Html.ValidationSummary(false, "", new { @class = "text-danger mb-3" })
+
+            @using (Html.BeginForm("ProfileInfo", "Account", FormMethod.Post, new { role = "form" }))
+            {
+                @Html.AntiForgeryToken()
+                @Html.HiddenFor(m => m.CustomerID)
+                @Html.HiddenFor(m => m.Username) @* Username để duy trì liên kết *@
+
+                @* Tên đăng nhập (Chỉ hiển thị) *@
+                <div class="mb-3">
+                    @Html.LabelFor(m => m.Username, "Tên đăng nhập", new { @class = "form-label fw-bold" })
+                    @Html.TextBoxFor(m => m.Username, new { @class = "form-control fw-bold bg-light", @readonly = "readonly" })
+                </div>
+
+                @* Họ tên *@
+                <div class="mb-3">
+                    @Html.LabelFor(m => m.CustomerName, "Họ và tên", new { @class = "form-label" })
+                    @Html.TextBoxFor(m => m.CustomerName, new { @class = "form-control" })
+                    @Html.ValidationMessageFor(m => m.CustomerName, "", new { @class = "text-danger" })
+                </div>
+
+                @* Email *@
+                <div class="mb-3">
+                    @Html.LabelFor(m => m.CustomerEmail, "Email", new { @class = "form-label" })
+                    @Html.TextBoxFor(m => m.CustomerEmail, new { @class = "form-control" })
+                    @Html.ValidationMessageFor(m => m.CustomerEmail, "", new { @class = "text-danger" })
+                </div>
+
+                @* Số điện thoại *@
+                <div class="mb-3">
+                    @Html.LabelFor(m => m.CustomerPhone, "Số điện thoại", new { @class = "form-label" })
+                    @Html.TextBoxFor(m => m.CustomerPhone, new { @class = "form-control" })
+                    @Html.ValidationMessageFor(m => m.CustomerPhone, "", new { @class = "text-danger" })
+                </div>
+
+                @* Địa chỉ *@
+                <div class="mb-4">
+                    @Html.LabelFor(m => m.CustomerAddress, "Địa chỉ", new { @class = "form-label" })
+                    @Html.TextBoxFor(m => m.CustomerAddress, new { @class = "form-control" })
+                    @Html.ValidationMessageFor(m => m.CustomerAddress, "", new { @class = "text-danger" })
+                </div>
+
+                @* Nút hành động (Căn đều 2 nút) *@
+                <div class="d-flex justify-content-between pt-3">
+                    <button type="submit" class="btn btn-success px-4">💾 LƯU THAY ĐỔI</button>
+                    @Html.ActionLink("Đổi mật khẩu", "ChangePassword", "Account", null, new { @class = "btn btn-outline-warning px-4" })
+                </div>
+            }
+        </div> @* END card *@
+
+        </div> @* END col-md-8 *@
+    </div> @* END row *@
+</div> @* END container *@

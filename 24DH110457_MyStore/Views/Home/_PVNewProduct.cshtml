@@ -1,0 +1,57 @@
+﻿@model MaSV_MyStore.Models.ViewModel.HomeProductVM
+@using PagedList.Mvc;
+
+@* Sử dụng class tiêu đề chung *@
+<h3 class="section-title mt-4"></h3>
+
+@if (Model.NewProducts != null && Model.NewProducts.Any())
+{
+    <div class="row">
+        @foreach (var item in Model.NewProducts)
+        {
+            @* Sử dụng cấu trúc 4 cột cho lưới *@
+            <div class="col-md-4 mb-4">
+                @* SỬA: Đảm bảo sử dụng class card-product *@
+                <div class="card card-product h-100">
+
+                    @* Logic hiển thị ảnh *@
+                    @{
+                        string imagePath = item.ProductImage;
+                        if (!imagePath.StartsWith("http", StringComparison.OrdinalIgnoreCase))
+                        {
+                            imagePath = Url.Content("~/Content/Images/" + imagePath);
+                        }
+                    }
+                    <a href="@Url.Action("ProductDetail", "Home", new { id = item.ProductID })">
+
+                        @* SỬA KHUNG ẢNH: Sử dụng card-img-container và style cố định *@
+                        <div class="card-img-container" style="height: 180px; display: flex; align-items: center; justify-content: center; padding: 10px;">
+                            <img src="@imagePath" alt="@item.ProductName" style="max-height: 100%; max-width: 100%; object-fit: contain;">
+                        </div>
+                    </a>
+
+                    @* SỬA: Đảm bảo sử dụng class card-body-product *@
+                    <div class="card-body card-body-product p-2 text-center">
+                        <p class="product-name mb-1" title="@item.ProductName">@item.ProductName</p>
+                        <p class="product-price">
+                            @item.ProductPrice.ToString("N0") ₫
+                        </p>
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+
+    @* HIỂN THỊ PHÂN TRANG *@
+    <div class="pagination-container text-center mt-4">
+        @Html.PagedListPager(Model.NewProducts, page => Url.Action("Index", "Home", new
+        {
+            page,
+            searchTerm = Model.SearchTerm // Giữ lại trạng thái tìm kiếm
+        }))
+    </div>
+}
+else
+{
+    <p class="text-muted">Không tìm thấy sản phẩm phù hợp.</p>
+}

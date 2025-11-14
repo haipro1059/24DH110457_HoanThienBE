@@ -19,7 +19,7 @@ namespace _24DH110457_MyStore.Models
         {
             this.Products = new HashSet<Product>();
         }
-    
+        public string Description { get; set; }
         public int CategoryID { get; set; }
         public string CategoryName { get; set; }
     

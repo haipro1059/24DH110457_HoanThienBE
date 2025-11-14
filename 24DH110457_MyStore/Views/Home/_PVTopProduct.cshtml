@@ -1,0 +1,33 @@
+﻿@model PagedList.IPagedList<_24DH110457_MyStore.Models.Product>
+@using PagedList.Mvc
+
+@if (Model != null && Model.Any())
+{
+    <h4 class="mt-4">Sản phẩm bán chạy</h4>
+    <div class="row">
+        @foreach (var product in Model)
+        {
+            <div class="col-md-4 mb-4">
+                <div class="card h-100 shadow-sm text-center">
+                    <a href="@Url.Action("ProductDetail", "Home", new { id = product.ProductID })">
+                        <img src="@product.ProductImage" alt="@product.ProductName" class="card-img-top" style="height: 120px; object-fit: contain;">
+                    </a>
+                    <div class="card-body p-2">
+                        <p class="card-title mb-1">@product.ProductName</p>
+                        <p class="text-primary fw-bold">@product.ProductPrice.ToString("N0") ₫</p>
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+
+    @* Phân trang *@
+    <div class="text-center">
+        @Html.PagedListPager(Model, page => Url.Action("ProductDetail", "Home", new
+        {
+            id = ViewBag.ProductID, // Cần truyền ID sản phẩm chính
+            page
+            // Thêm các tham số tìm kiếm/sắp xếp khác nếu có
+        }))
+    </div>
+}

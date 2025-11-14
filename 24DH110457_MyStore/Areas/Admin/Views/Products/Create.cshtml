@@ -1,0 +1,38 @@
+﻿@model _24DH110457_MyStore.Models.Product
+
+@{
+    ViewBag.Title = "Create";
+    Layout = "~/Areas/Admin/Views/Shared/_AdminLayout.cshtml";
+}
+
+<h2 class="bg-success text-center p-2 text-white">THÊM SẢN PHẨM</h2>
+
+<!-- 🔧 Sửa dòng mở form: thêm enctype để gửi file ảnh -->
+@using (Html.BeginForm("Create", "Products", FormMethod.Post, new { enctype = "multipart/form-data" }))
+{
+    @Html.AntiForgeryToken()
+
+    <div class="form-horizontal">
+        @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+
+        <!-- Partial chứa các trường ProductName, Price, CategoryID,... -->
+        @Html.Partial("PVCreateEditProduct", Model)
+
+        <!-- 🌟 Thêm phần upload ảnh (nằm ngoài partial) -->
+        <div class="form-group">
+            @Html.Label("Hình ảnh", htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                <input type="file" name="ImageFile" accept="image/*" class="form-control" />
+                <p class="text-muted">Chọn hình sản phẩm (nếu có)</p>
+            </div>
+        </div>
+
+        <!-- Nút lưu -->
+        <div class="form-group">
+            <div class="col-md-offset-2 col-md-10 mt-3">
+                <input type="submit" value="Thêm sản phẩm" class="btn btn-primary" />
+                @Html.ActionLink("Quay lại", "Index", null, new { @class = "btn btn-secondary ms-2" })
+            </div>
+        </div>
+    </div>
+}

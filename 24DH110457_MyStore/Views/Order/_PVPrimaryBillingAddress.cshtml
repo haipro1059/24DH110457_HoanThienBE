@@ -1,0 +1,27 @@
+﻿@model _24DH110457_MyStore.Models.ViewModel.ShippingInfoVM
+@* Model này được truyền từ CheckoutVM.ShippingInfo *@
+
+<div class="card card-body mb-3 border-secondary border-3">
+    <div class="d-flex justify-content-between align-items-start">
+        <div>
+            <h6 class="mb-1 text-primary">Địa chỉ Giao hàng Chính</h6>
+
+            @if (Model != null)
+            {
+                <p class="mb-0 fw-bold">@Model.RecipientName - @Model.Phone</p>
+                <p class="text-muted small mb-0">
+                    @Model.Address
+                </p>
+            }
+            else
+            {
+                <p class="text-danger">Vui lòng điền thông tin giao hàng chi tiết.</p>
+            }
+        </div>
+
+        @* Nút Thay đổi (Chuyển hướng đến trang Profile/Address) *@
+        <a href="@Url.Action("ProfileInfo", "Account", new { area = "" })" class="btn btn-sm btn-outline-secondary">
+            Thay đổi
+        </a>
+    </div>
+</div>

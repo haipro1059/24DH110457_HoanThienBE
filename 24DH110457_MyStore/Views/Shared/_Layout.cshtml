@@ -1,39 +1,136 @@
-﻿<!DOCTYPE html>
-<html>
+﻿@* File: Views/Shared/_Layout.cshtml (Hoàn chỉnh và sẵn sàng) *@
+@using MaSV_MyStore.Models.ViewModel
+@using System.Web.Security
+@using System.Linq
+@using System.Web.Caching
+<!DOCTYPE html>
+
+<head>
+
+    <meta charset="utf-8" /> @* BẮT BUỘC PHẢI CÓ DÒNG NÀY *@
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    @* ... *@
+</head>
+@{
+    // Buộc trình duyệt không cache file Layout trong quá trình phát triển
+    // Lệnh này quan trọng để giải quyết lỗi Menu không cập nhật
+    Response.Cache.SetCacheability(HttpCacheability.NoCache);
+    Response.Cache.SetNoStore();
+
+    // Lấy thông tin giỏ hàng từ Session
+    var cart = Session["Cart"] as _24DH110457_MyStore.Models.ViewModel.Cart;
+
+    // Khởi tạo PersonalMenuVM và điền dữ liệu
+    var pmModel = new PersonalMenuVM
+    {
+        IsLoggedIn = User.Identity.IsAuthenticated,
+        Username = User.Identity.IsAuthenticated ? User.Identity.Name : string.Empty,
+        CartCount = 0
+    };
+
+    // Tính tổng số lượng sản phẩm trong giỏ
+    if (cart != null && cart.Items.Any())
+    {
+        pmModel.CartCount = cart.Items.Sum(i => i.Quantity);
+    }
+
+    ViewBag.pmmodel = pmModel;
+}
+
+<!DOCTYPE html>
+<html lang="vi">
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>@ViewBag.Title - My ASP.NET Application</title>
-    @Styles.Render("~/Content/css")
-    @Scripts.Render("~/bundles/modernizr")
+    <title>@ViewBag.Title - MyStore</title>
+
+    @* Thêm liên kết CSS Bootstrap và Styles *@
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="~/Content/Site.css" rel="stylesheet" />
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" rel="stylesheet" />
+    @RenderSection("styles", required: false)
 </head>
 <body>
-    <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-dark bg-dark">
-        <div class="container">
-            @Html.ActionLink("Application name", "Index", "Home", new { area = "" }, new { @class = "navbar-brand" })
-            <button type="button" class="navbar-toggler" data-bs-toggle="collapse" data-bs-target=".navbar-collapse" title="Toggle navigation" aria-controls="navbarSupportedContent"
-                    aria-expanded="false" aria-label="Toggle navigation">
-                <span class="navbar-toggler-icon"></span>
-            </button>
-            <div class="collapse navbar-collapse d-sm-inline-flex justify-content-between">
-                <ul class="navbar-nav flex-grow-1">
-                    <li>@Html.ActionLink("Home", "Index", "Home", new { area = "" }, new { @class = "nav-link" })</li>
-                    <li>@Html.ActionLink("About", "About", "Home", new { area = "" }, new { @class = "nav-link" })</li>
-                    <li>@Html.ActionLink("Contact", "Contact", "Home", new { area = "" }, new { @class = "nav-link" })</li>
-                </ul>
+
+    @* HEADER VÀ THANH ĐIỀU HƯỚNG CHÍNH *@
+    <header>
+        <nav class="navbar navbar-expand-lg navbar-light bg-light shadow-sm">
+            <div class="container-fluid">
+                @Html.ActionLink("FASTOR", "Index", "Home", new { area = "" }, new { @class = "navbar-brand fw-bold" })
+
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+
+                <div class="collapse navbar-collapse" id="navbarNav">
+                    <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                        @* MENU DANH MỤC *@
+                        <li class="nav-item">
+                            @Html.ActionLink("Danh mục", "ProductList", "Home", null, new { @class = "nav-link" })
+                        </li>
+                    </ul>
+
+                    <ul class="navbar-nav ms-auto">
+
+                        @* MENU CÁ NHÂN (PERSONAL MENU) - Đã sửa lỗi hiển thị *@
+                        <li class="nav-item dropdown">
+                            <a class="nav-link dropdown-toggle" href="#" id="accountDropdown" role="button" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                @if (pmModel.IsLoggedIn)
+                                {
+                                    @* Nếu đăng nhập, hiển thị tên người dùng *@
+                                    @:Xin chào, @pmModel.Username
+                                }
+                                else
+                                {
+                                    @* Nếu chưa đăng nhập, hiển thị "Tài khoản" *@
+                                    @:Tài khoản
+                                }
+                            </a>
+                            <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="accountDropdown">
+                                @if (pmModel.IsLoggedIn)
+                                {
+                                    <li>@Html.ActionLink("Thông tin tài khoản", "ProfileInfo", "Account", null, new { @class = "dropdown-item" })</li>
+                                    <li>@Html.ActionLink("Lịch sử mua hàng", "OrderHistory", "Order", null, new { @class = "dropdown-item" })</li>
+                                    <li><hr class="dropdown-divider"></li>
+                                    <li>@Html.ActionLink("Đăng xuất", "Logout", "Account", null, new { @class = "dropdown-item" })</li>
+                                }
+                                else
+                                {
+                                    <li>@Html.ActionLink("Đăng ký", "Register", "Account", null, new { @class = "dropdown-item" })</li>
+                                    <li>@Html.ActionLink("Đăng nhập", "Login", "Account", null, new { @class = "dropdown-item" })</li>
+                                }
+                            </ul>
+                        </li>
+
+                        @* LIÊN KẾT GIỎ HÀNG *@
+                        <li class="nav-item">
+                            @Html.ActionLink($"Giỏ hàng ({pmModel.CartCount})", "Index", "Cart", null, new { @class = "nav-link" })
+                        </li>
+                    </ul>
+                </div>
             </div>
-        </div>
-    </nav>
+        </nav>
+    </header>
+
+    @* PHẦN NỘI DUNG CHÍNH (BODY) *@
     <div class="container body-content">
         @RenderBody()
         <hr />
         <footer>
-            <p>&copy; @DateTime.Now.Year - My ASP.NET Application</p>
+            <div class="d-flex justify-content-between align-items-center">
+                @* THÊM LỚP FLEXBOX VÀ CĂN CHỈNH *@
+                <p>&copy; @DateTime.Now.Year - MyStore</p>
+                <p>Địa chỉ: 123 đường abc quận 10 TPHCM</p> @* ĐỊA CHỈ TRONG THẺ P RIÊNG *@
+            </div>
         </footer>
     </div>
 
-    @Scripts.Render("~/bundles/jquery")
-    @Scripts.Render("~/bundles/bootstrap")
-    @RenderSection("scripts", required: false)
+    @* THƯ VIỆN JAVASCRIPT *@
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+    @* ĐẶT LỆNH NÀY ĐỂ GIẢI QUYẾT LỖI HTTPEXCEPTION CŨ VÀ ĐẢM BẢO SCRIPT CUỐI CÙNG *@
+    @RenderSection("Scripts", required: false)
+
 </body>
 </html>

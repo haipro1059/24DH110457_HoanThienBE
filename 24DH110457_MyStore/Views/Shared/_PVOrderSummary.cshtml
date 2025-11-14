@@ -1,0 +1,34 @@
+﻿@model _24DH110457_MyStore.Models.ViewModel.Cart
+
+<table class="table table-sm align-middle">
+    <thead>
+        <tr>
+            <th>Sản phẩm</th>
+            <th>SL</th>
+            <th class="text-end">Thành tiền</th>
+        </tr>
+    </thead>
+    <tbody>
+        @if (Model != null && Model.Items != null)
+        {
+            foreach (var item in Model.Items)
+            {
+                <tr>
+                    <td>
+                        @* SỬA LỖI: item đã là CartItem, nên truy cập trực tiếp ProductImage *@
+                        <img src="@item.ProductImage" alt="@item.ProductName" style="max-height: 40px; margin-right: 10px;" class="rounded">
+                        @item.ProductName
+                    </td>
+                    <td>@item.Quantity</td>
+                    <td class="text-end fw-bold">@item.TotalPrice.ToString("N0") ₫</td>
+                </tr>
+            }
+        }
+        else
+        {
+            <tr>
+                <td colspan="3" class="text-center text-muted">Giỏ hàng trống hoặc dữ liệu không hợp lệ.</td>
+            </tr>
+        }
+    </tbody>
+</table>

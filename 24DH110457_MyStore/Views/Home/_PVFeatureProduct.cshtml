@@ -1,0 +1,42 @@
+﻿@model IEnumerable<_24DH110457_MyStore.Models.Product>
+
+@* Partial View này hiển thị thanh cuộn ngang (Slider) cho Sản phẩm nổi bật *@
+
+@if (Model != null && Model.Any())
+{
+    <h3 class="product-section-title mt-4"></h3>
+
+    @* SỬA CẤU TRÚC: Thay thế div.row bằng div cuộn ngang *@
+    <div class="d-flex overflow-auto py-3" style="gap: 15px; scroll-snap-type: x mandatory;">
+
+        @foreach (var item in Model)
+        {
+            @* Thay thế div.col-md-3 bằng div card cố định kích thước *@
+            <div class="card card-product flex-shrink-0" style="width: 180px; scroll-snap-align: start;">
+
+                @* Logic hiển thị ảnh *@
+                @{
+                    string imagePath = item.ProductImage;
+                    if (!imagePath.StartsWith("http", StringComparison.OrdinalIgnoreCase))
+                    {
+                        imagePath = Url.Content("~/Content/Images/" + imagePath);
+                    }
+                }
+
+                <a href="@Url.Action("ProductDetail", "Home", new { id = item.ProductID })">
+                    @* SỬ DỤNG KHUNG ẢNH ĐỂ NGĂN ẢNH TRÀN *@
+                    <div class="card-img-container" style="height: 150px; display: flex; align-items: center; justify-content: center; padding: 10px;">
+                        <img src="@imagePath" alt="@item.ProductName" style="max-height: 100%; max-width: 100%; object-fit: contain;">
+                    </div>
+                </a>
+
+                <div class="card-body card-body-product p-2 text-center">
+                    <p class="product-name mb-1" title="@item.ProductName">@item.ProductName</p>
+                    <p class="product-price">
+                        @item.ProductPrice.ToString("N0") ₫
+                    </p>
+                </div>
+            </div>
+        }
+    </div>
+}

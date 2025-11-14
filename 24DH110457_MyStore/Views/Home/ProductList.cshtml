@@ -1,0 +1,55 @@
+﻿@model PagedList.IPagedList<_24DH110457_MyStore.Models.Product>
+@using PagedList.Mvc
+
+@{
+    ViewBag.Title = ViewBag.CurrentCategory ?? "Danh sách sản phẩm";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h2 class="text-primary mb-4">DANH SÁCH: @ViewBag.CurrentCategory</h2>
+
+@if (Model != null && Model.Any())
+{
+    <div class="row">
+        @foreach (var item in Model)
+        {
+            <div class="col-md-4 mb-4">
+                <div class="card h-100 shadow-sm">
+                    @* Logic hiển thị ảnh *@
+                    @{
+                        string imagePath = item.ProductImage;
+                        if (!imagePath.StartsWith("http", StringComparison.OrdinalIgnoreCase))
+                        {
+                            imagePath = Url.Content("~/Content/Images/" + imagePath);
+                        }
+                    }
+                    <a href="@Url.Action("ProductDetail", "Home", new { id = item.ProductID })">
+                        <img src="@imagePath" class="card-img-top" alt="@item.ProductName" style="height: 200px; object-fit: contain;">
+                    </a>
+                    <div class="card-body">
+                        <h6 class="card-title">@item.ProductName</h6>
+                        <p class="card-text text-danger fw-bold">
+                            @item.ProductPrice.ToString("N0") ₫
+                        </p>
+                        @Html.ActionLink("Xem Chi Tiết", "ProductDetail", new { id = item.ProductID }, new { @class = "btn btn-sm btn-outline-primary" })
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+
+    @* HIỂN THỊ PHÂN TRANG *@
+    <div class="pagination-container text-center mt-4">
+        @Html.PagedListPager(Model, page => Url.Action("ProductList", "Home", new
+        {
+            page,
+            categoryId = ViewBag.CategoryID // Giữ lại ID danh mục hiện tại
+        }))
+    </div>
+}
+else
+{
+    <div class="alert alert-warning text-center">
+        Không tìm thấy sản phẩm nào trong danh mục này.
+    </div>
+}

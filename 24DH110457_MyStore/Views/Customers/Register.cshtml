@@ -1,0 +1,57 @@
+﻿@model _24DH110457_MyStore.Models.ViewModel.RegisterVM
+@{
+    ViewBag.Title = "Đăng ký tài khoản";
+}
+
+<h2 class="text-center text-success">Đăng ký tài khoản</h2>
+
+@using (Html.BeginForm("Register", "Account", FormMethod.Post))
+{
+    @Html.AntiForgeryToken()
+
+    @Html.ValidationSummary(true, "Vui lòng kiểm tra lại các lỗi sau:", new { @class = "text-danger" })
+
+    @* Ho ten (CustomerName trong RegisterVM) *@
+    <div class="form-group mb-2">
+        @Html.LabelFor(m => m.CustomerName, "Họ tên")
+        @Html.TextBoxFor(m => m.CustomerName, new { @class = "form-control" })
+        @Html.ValidationMessageFor(m => m.CustomerName, "", new { @class = "text-danger" })
+    </div>
+
+    @* Email *@
+    <div class="form-group mb-2">
+        @Html.LabelFor(m => m.CustomerEmail, "Email")
+        @Html.TextBoxFor(m => m.CustomerEmail, new { @class = "form-control", type = "email" })
+        @Html.ValidationMessageFor(m => m.CustomerEmail, "", new { @class = "text-danger" })
+    </div>
+
+    @* Số điện thoại *@
+    <div class="form-group mb-2">
+        @Html.LabelFor(m => m.CustomerPhone, "Số điện thoại")
+        @Html.TextBoxFor(m => m.CustomerPhone, new { @class = "form-control" })
+        @Html.ValidationMessageFor(m => m.CustomerPhone, "", new { @class = "text-danger" })
+    </div>
+
+    @* Tên đăng nhập (Username trong RegisterVM) *@
+    <div class="form-group mb-2">
+        @Html.LabelFor(m => m.Username, "Tên đăng nhập")
+        @Html.TextBoxFor(m => m.Username, new { @class = "form-control" })
+        @Html.ValidationMessageFor(m => m.Username, "", new { @class = "text-danger" })
+    </div>
+
+    @* Mật khẩu (Password trong RegisterVM) *@
+    <div class="form-group mb-2">
+        @Html.LabelFor(m => m.Password, "Mật khẩu")
+        @Html.PasswordFor(m => m.Password, new { @class = "form-control" })
+        @Html.ValidationMessageFor(m => m.Password, "", new { @class = "text-danger" })
+    </div>
+
+    @* Xác nhận mật khẩu (ConfirmPassword trong RegisterVM) *@
+    <div class="form-group mb-2">
+        @Html.LabelFor(m => m.ConfirmPassword, "Xác nhận mật khẩu")
+        @Html.PasswordFor(m => m.ConfirmPassword, new { @class = "form-control" })
+        @Html.ValidationMessageFor(m => m.ConfirmPassword, "", new { @class = "text-danger" })
+    </div>
+
+    <button type="submit" class="btn btn-success">Đăng ký</button>
+}

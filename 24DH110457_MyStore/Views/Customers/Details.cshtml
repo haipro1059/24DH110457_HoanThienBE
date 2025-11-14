@@ -1,0 +1,26 @@
+﻿@model _24DH110457_MyStore.Models.Customer
+@{
+    ViewBag.Title = "Thông tin cá nhân";
+}
+
+<h2 class="text-center text-success mb-4">Thông tin cá nhân</h2>
+
+<table class="table table-bordered table-striped w-50 mx-auto">
+    <tr>
+        <th>Họ tên</th>
+        <td>@Model.CustomerName</td>
+    </tr>
+    <tr>
+        <th>Email</th>
+        <td>@Model.CustomerEmail</td>
+    </tr>
+    <tr>
+        <th>Số điện thoại</th>
+        <td>@Model.CustomerPhone</td>
+    </tr>
+</table>
+
+<div class="text-center mt-3">
+    @Html.ActionLink("✏️ Chỉnh sửa", "Edit", null, new { @class = "btn btn-warning me-2" })
+    @Html.ActionLink("🚪 Đăng xuất", "Logout", null, new { @class = "btn btn-danger" })
+</div>

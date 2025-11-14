@@ -1,0 +1,151 @@
+﻿@{
+    ViewBag.Title = "Quản lý khách hàng";
+    Layout = "~/Areas/Admin/Views/Shared/_AdminLayout.cshtml";
+    // Đảm bảo ViewBag.Customers chứa dữ liệu List<Customer>
+    var list = ViewBag.Customers as List<_24DH110457_MyStore.Models.Customer>;
+}
+
+<h2 class="text-center text-success mb-4">QUẢN LÝ KHÁCH HÀNG</h2>
+
+<div class="row">
+    <div class="col-md-4">
+        <div class="card p-3 shadow">
+            <h4 class="text-center mb-3">Thông tin khách hàng</h4>
+
+            @using (Html.BeginForm("Create", "Customers", FormMethod.Post, new { enctype = "multipart/form-data" }))
+            {
+                @Html.AntiForgeryToken()
+
+                <div class="form-group">
+                    <label>MÃ KHÁCH HÀNG</label>
+                    <input type="text" name="CustomerID" class="form-control" />
+                </div>
+
+                <div class="form-group">
+                    <label>HỌ VÀ TÊN</label>
+                    <input type="text" name="CustomerName" class="form-control" required />
+                </div>
+
+                <div class="form-group">
+                    <label>TÊN ĐĂNG NHẬP</label>
+                    <input type="text" name="Username" class="form-control" required />
+                </div>
+
+                <div class="form-group">
+                    <label>MẬT KHẨU</label>
+                    <input type="password" name="Password" class="form-control" required /> @* Dùng Password *@
+                </div>
+
+                <div class="form-group">
+                    <label>XÁC NHẬN MẬT KHẨU</label>
+                    <input type="password" name="ConfirmPassword" class="form-control" required />
+                </div>
+
+                <div class="form-group">
+                    <label>ĐỊA CHỈ EMAIL</label>
+                    <input type="email" name="CustomerEmail" class="form-control" required />
+                </div>
+
+                <div class="form-group">
+                    <label>HÌNH ẢNH</label>
+                    <input type="text" name="CustomerImage" class="form-control" placeholder="Tên file ảnh (vd: user1.jpg)" />
+                </div>
+
+                <div class="form-group">
+                    <label>KÍCH HOẠT?</label>
+                    <select name="IsActive" class="form-control">
+                        <option value="false">Chưa kích hoạt</option>
+                        <option value="true">Kích hoạt</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label>VAI TRÒ</label>
+                    <select name="Role" class="form-control">
+                        <option>Khách hàng</option>
+                        <option>Nhân viên</option>
+                    </select>
+                </div>
+
+                <div class="text-center mt-3">
+                    <button type="submit" class="btn btn-success">Thêm mới</button>
+                    <button type="reset" class="btn btn-secondary">Nhập lại</button>
+                    <a href="@Url.Action("Index", "Customers")" class="btn btn-info">Danh sách</a>
+                </div>
+            }
+        </div>
+    </div>
+
+    <div class="col-md-8">
+        <div class="card p-3 shadow">
+            <h4 class="text-center mb-3">Danh sách khách hàng</h4>
+
+            @using (Html.BeginForm("DeleteSelected", "Customers", FormMethod.Post))
+            {
+                @Html.AntiForgeryToken()
+                <table class="table table-bordered text-center align-middle">
+                    <thead class="table-success">
+                        <tr>
+                            <th></th>
+                            <th>MÃ KH</th>
+                            <th>HỌ VÀ TÊN</th>
+                            <th>ĐỊA CHỈ EMAIL</th>
+                            <th>HÌNH ẢNH</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @if (list != null)
+                        {
+                            // ĐÃ SỬA LỖI RAZOR: BỎ DẤU @ TRƯỚC FOREACH
+                            foreach (var item in list)
+                            {
+                                <tr>
+                                    <td><input type="checkbox" name="selectedIDs" value="@item.CustomerID" /></td>
+                                    <td>@item.CustomerID</td>
+                                    <td>@item.CustomerName</td> @* SỬA: CustomerFullName -> CustomerName *@
+                                    <td>@item.CustomerEmail</td>
+                                    <td>
+                                        <img src="~/Images/@item.CustomerImage" alt="img" width="70" class="rounded" /> @* Dùng CustomerImage *@
+                                    </td>
+                                </tr>
+                            }
+                        }
+                    </tbody>
+                </table>
+
+                <div class="d-flex justify-content-between">
+                    <div>
+                        <button type="button" id="checkAll" class="btn btn-outline-primary btn-sm">Chọn tất cả</button>
+                        <button type="button" id="uncheckAll" class="btn btn-outline-secondary btn-sm">Bỏ chọn tất cả</button>
+                    </div>
+                    <div>
+                        <button type="submit" class="btn btn-danger btn-sm">Xóa các mục chọn</button>
+                        <a href="@Url.Action("Index")" class="btn btn-success btn-sm">Nhập thêm</a>
+                    </div>
+                </div>
+            }
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+         
+            document.querySelector('button[type="reset"]').addEventListener('click', function (e) {
+                
+                document.querySelector('#customerForm').reset();
+
+               
+                document.querySelector('input[name="CustomerID"]').value = '';
+                
+            });
+        });
+        document.getElementById("checkAll").addEventListener("click", function () {
+            document.querySelectorAll("input[name='selectedIDs']").forEach(cb => cb.checked = true);
+        });
+        document.getElementById("uncheckAll").addEventListener("click", function () {
+            document.querySelectorAll("input[name='selectedIDs']").forEach(cb => cb.checked = false);
+        });
+    </script>
+}

@@ -1,0 +1,16 @@
+﻿@model IEnumerable<_24DH110457_MyStore.Models.Product>
+
+<h3 class="text-center text-danger mt-4">Sản phẩm mới</h3>
+<div class="d-flex overflow-auto p-3" style="gap: 20px;">
+    @foreach (var item in Model)
+    {
+        <div class="card" style="width: 200px;">
+            <img src="@Url.Content(item.ProductImage.StartsWith("http") ? item.ProductImage : "~/Content/images/" + item.ProductImage)"
+                 class="card-img-top" style="height:180px; object-fit:cover;" />
+            <div class="card-body text-center">
+                <h6 class="card-title">@item.ProductName</h6>
+                <p class="text-primary fw-bold">@item.ProductPrice.ToString("N0") ₫</p>
+            </div>
+        </div>
+    }
+</div>
